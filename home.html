@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <title>Монголын аймгууд – Интерактив газрын зураг</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .map {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    svg {
+      width: 500px;
+      height: auto;
+    }
+    .aimag {
+      fill: #cce5ff;
+      stroke: #333;
+      stroke-width: 1;
+      cursor: pointer;
+    }
+    .aimag:hover {
+      fill: #66b2ff;
+    }
+    .info {
+      flex: 1;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .info h2 {
+      margin-top: 0;
+      color: #0056b3;
+    }
+    .label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Монголын аймгуудын интерактив газрын зураг</h1>
+
+<div class="container">
+  <!-- Газрын зураг -->
+  <div class="map">
+    <!-- Сургалтын зорилгод зориулсан ХЯЛБАРШУУЛСАН SVG зураг -->
+    <svg viewBox="0 0 600 400">
+      <!-- Баян-Өлгий -->
+      <path id="bayan_ulgii" class="aimag" d="M40 100 L110 90 L120 160 L50 170 Z" />
+      <!-- Увс -->
+      <path id="uvs" class="aimag" d="M120 80 L200 70 L210 130 L130 140 Z" />
+      <!-- Ховд -->
+      <path id="khovd" class="aimag" d="M110 140 L210 130 L220 190 L120 200 Z" />
+      <!-- Завхан -->
+      <path id="zavkhan" class="aimag" d="M200 110 L280 100 L290 160 L210 170 Z" />
+      <!-- Говь-Алтай -->
+      <path id="govi_altai" class="aimag" d="M180 180 L300 170 L310 240 L190 250 Z" />
+      <!-- Архангай -->
+      <path id="arkhangai" class="aimag" d="M260 150 L330 140 L340 190 L270 210 Z" />
+      <!-- Баянхонгор -->
+      <path id="bayankhongor" class="aimag" d="M260 210 L360 200 L370 270 L270 280 Z" />
+      <!-- Өвөрхангай -->
+      <path id="uvurkhangai" class="aimag" d="M330 170 L400 160 L410 210 L340 220 Z" />
+      <!-- Төв -->
+      <path id="tuv" class="aimag" d="M370 150 L430 145 L440 185 L380 195 Z" />
+      <!-- Булган -->
+      <path id="bulgan" class="aimag" d="M330 110 L390 100 L400 145 L340 150 Z" />
+      <!-- Орхон -->
+      <path id="orkhon" class="aimag" d="M310 135 L330 130 L335 150 L315 155 Z" />
+      <!-- Сэлэнгэ -->
+      <path id="selenge" class="aimag" d="M350 80 L430 70 L440 120 L360 130 Z" />
+      <!-- Дархан-Уул -->
+      <path id="darkhan" class="aimag" d="M380 120 L400 115 L405 135 L385 140 Z" />
+      <!-- Хэнтий -->
+      <path id="khentii" class="aimag" d="M430 120 L500 130 L510 180 L440 190 Z" />
+      <!-- Дорнод -->
+      <path id="dornod" class="aimag" d="M500 110 L580 120 L590 190 L510 200 Z" />
+      <!-- Сүхбаатар -->
+      <path id="sukhbaatar" class="aimag" d="M470 190 L560 200 L570 260 L480 270 Z" />
+      <!-- Дорноговь -->
+      <path id="dornogovi" class="aimag" d="M430 210 L520 220 L530 280 L440 290 Z" />
+      <!-- Дундговь -->
+      <path id="dundgovi" class="aimag" d="M380 210 L450 220 L460 270 L390 260 Z" />
+      <!-- Өмнөговь -->
+      <path id="umnugovi" class="aimag" d="M360 270 L520 290 L540 360 L380 350 Z" />
+      <!-- Говьсүмбэр -->
+      <path id="govisumber" class="aimag" d="M430 195 L445 195 L450 210 L435 210 Z" />
+    </svg>
+    <p style="font-size:12px; color:#555;">
+      ⚠️ Энэ зураг нь сургалтын зориулалттай, бодит хил хязгаарыг хялбаршуулсан болно.
+    </p>
+  </div>
+
+  <!-- Мэдээлэл харагдах хэсэг -->
+  <div class="info" id="infoBox">
+    <h2>Аймаг сонгоно уу</h2>
+    <p>Газрын зураг дээрх аймаг дээр дарж мэдээлэл харна.</p>
+  </div>
+</div>
+
+<script>
+  // Аймгуудын мэдээлэл (энгийн объект хэлбэрээр)
+  const aimagData = {
+    bayan_ulgii: { name: "Баян-Өлгий аймаг", center: "Өлгий хот", population: "≈ 105,000 хүн", feature: "Казах үндэстэн олонтой, бүргэдийн баяр" },
+    uvs: { name: "Увс аймаг", center: "Улаангом хот", population: "≈ 82,000 хүн", feature: "Увс нуур, байгалийн өв" },
+    khovd: { name: "Ховд аймаг", center: "Ховд хот", population: "≈ 90,000 хүн", feature: "Олон ястны өлгий нутаг" },
+    zavkhan: { name: "Завхан аймаг", center: "Улиастай хот", population: "≈ 70,000 хүн", feature: "Ой, тал, говь хосолсон" },
+    govi_altai: { name: "Говь-Алтай аймаг", center: "Алтай хот", population: "≈ 60,000 хүн", feature: "Уул, говийн бүс" },
+    arkhangai: { name: "Архангай аймаг", center: "Цэцэрлэг хот", population: "≈ 95,000 хүн", feature: "Хангайн бүс, мал аж ахуй" },
+    bayankhongor: { name: "Баянхонгор аймаг", center: "Баянхонгор хот", population: "≈ 88,000 хүн", feature: "Говь-хангайн зааг" },
+    uvurkhangai: { name: "Өвөрхангай аймаг", center: "Арвайхээр хот", population: "≈ 120,000 хүн", feature: "Түүхэн дурсгал олонтой" },
+    tuv: { name: "Төв аймаг", center: "Зуунмод хот", population: "≈ 100,000 хүн", feature: "Нийслэлийг хүрээлдэг" },
+    bulgan: { name: "Булган аймаг", center: "Булган хот", population: "≈ 65,000 хүн", feature: "Ой, тариалан хөгжсөн" },
+    orkhon: { name: "Орхон аймаг", center: "Эрдэнэт хот", population: "≈ 105,000 хүн", feature: "Аж үйлдвэр" },
+    selengе: { name: "Сэлэнгэ аймаг", center: "Сүхбаатар хот", population: "≈ 110,000 хүн", feature: "Газар тариалан" },
+    darkhan: { name: "Дархан-Уул аймаг", center: "Дархан хот", population: "≈ 105,000 хүн", feature: "Аж үйлдвэрийн төв" },
+    khentii: { name: "Хэнтий аймаг", center: "Чингис хот", population: "≈ 80,000 хүн", feature: "Чингис хааны нутаг" },
+    dornod: { name: "Дорнод аймаг", center: "Чойбалсан хот", population: "≈ 75,000 хүн", feature: "Тал хээр" },
+    sukhbaatar: { name: "Сүхбаатар аймаг", center: "Баруун-Урт хот", population: "≈ 55,000 хүн", feature: "Талын бүс" },
+    dornogovi: { name: "Дорноговь аймаг", center: "Сайншанд хот", population: "≈ 70,000 хүн", feature: "Говь, аж үйлдвэр" },
+    dundgovi: { name: "Дундговь аймаг", center: "Мандалговь хот", population: "≈ 50,000 хүн", feature: "Говийн бүс" },
+    umnugovi: { name: "Өмнөговь аймаг", center: "Даланзадгад хот", population: "≈ 70,000 хүн", feature: "Говь, аялал жуулчлал" },
+    govisumber: { name: "Говьсүмбэр аймаг", center: "Чойр хот", population: "≈ 18,000 хүн", feature: "Хамгийн цөөн хүн амтай" }
+  };
+
+  // Бүх аймгийг сонгож click үйлдэл нэмэх
+  const aimags = document.querySelectorAll('.aimag');
+  const infoBox = document.getElementById('infoBox');
+
+  aimags.forEach(aimag => {
+    aimag.addEventListener('click', () => {
+      const data = aimagData[aimag.id];
+
+      infoBox.innerHTML = `
+        <h2>${data.name}</h2>
+        <p><span class="label">Төв:</span> ${data.center}</p>
+        <p><span class="label">Хүн ам:</span> ${data.population}</p>
+        <p><span class="label">Онцлог:</span> ${data.feature}</p>
+      `;
+    });
+  });
+</script>
+
+</body>
+</html>
